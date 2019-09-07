@@ -1,0 +1,3 @@
+<additional>
+  <vType id="myVehic2" accel="0.8" decel="4.5" sigma="0.5" length="5" maxSpeed="17"/>
+</additional>

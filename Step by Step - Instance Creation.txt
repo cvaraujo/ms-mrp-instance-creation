@@ -1,0 +1,37 @@
+Step by step - SUMO + Open Street Map + NS2
+
+- Download do mapa desejado no site do www.openstreetmaps.com
+
+- java -jar ../../Pre-processing/OSM-SUMO.jar ->> Abrir o OSM Filter para "limpar" o mapa, removendo ruas residenciais e de menor tráfego
+
+- java -jar ../../Pre-processing/josm-tested.jar ->> Abrir o mapa gerado no openstreetmap editor para remover/corrigir problemas e conflitos nos mapas gerados
+
+- netconvert --osm washingtonCleared.osm -o ../Net/washington.net.xml --offset.disable-normalization ->> Converter o mapa em um arquivo para ser lido no sumo
+
+- polyconvert --net-file ../Net/washington.net.xml --osm-files washingtonCleared.osm --type-file ../../typeMap.xml -o ../Poly/poly.xml ->> adiciona elementos gráficos adicionais no mapa que será lido na simulação (apenas para valorizar o mapa)
+
+- python /usr/share/sumo/tools/randomTrips.py -n ../Net/washington.net.xml -t "type=\"myVehic\"" -a vehicle.add.xml --vclass passenger -o ../Trips/trips.trips.xml ->> cria todas as rotas possíveis dentro do mapa, respeitando o sentido das ruas. Se não houver parâmetro nomeando o arquivo de saída, o arquivo é salvo com o nome trips.trips
+
+- duarouter --route-files ../Trips/trips.trips.xml --net-file ../Net/washington.net.xml --additional-files ../../vehicle.add.xml --output-file ../Route/washingont.rou.xml -b 0 -e 100 --ignore-errors ->> Cria o tráfego de forma aleatória, levando em consideração as rotas criadas no passo anterior, começando no segundo 0 e terminando no segundo 100
+
+- sumo -c ../../map.sumo.cfg -a ../../vehicle.add.xml --fcd-output ../FCD/washington.fcd.xml ->> abre o arquivo de configuração da simulação, junto com um arquivo com informações adicionais da simulação. O primeiro possui referências para os outros arquivos da simulação. O parametro --fcd-output salva em um arquivo um log do que aconteceu na simulação, esta parte é importante para a exportação para o ns2
+
+- python ../../../Python\ Scripts/fcd_chunk.py --fcdFile ../FCD/washington.fcd.xml --chunkOutput ../FCD/washington_50_65.fcd.xml --startTime 50 --endTime 65 --stepSize 1 ->> 15 segundos para média da simulação, contando a partir da quantidade de nós, ou seja, se são 10 nós o chunk irá de 10 a 25.
+
+- python /usr/share/sumo/tools/traceExporter.py --fcd-input ../FCD/washington_50_65.fcd.xml --ns2activity-output ../FCD/FCD-Output/washington-activity.tcl --ns2config-output ../FCD/FCD-Output/washington-config.tcl --ns2mobility-output ../FCD/FCD-Output/washington-mobility.tcl
+
+- python ../../../Python\ Scripts/fcd2vanet.py --fcdFile ../FCD/washington_50_65.fcd.xml --vanetFile ../FCD/FCD-Output/vanet_washington_50_65.txt --startTime 50 --endTime 65 --stepSize 1 --radius 300
+
+- Jupyter normalize the mobility and create the connections flow
+
+ns vanet.tcl washington.mob.15.tcl washington.topo.15.tcl
+
+cp graphviz.txt graphviz.dot
+
+neato -Tpng graphviz.dot -o graph.png
+
+
+#
+# 75x75 - Not in simulation: 55, 78, 111, 144
+# 100x100 - Not in simulation: 75, 106, 113
+#

@@ -1,0 +1,52 @@
+**********************************Instruçõe para Utilização do Filtro***************************
+
+1.Na pasta SUMO/OSM2SUMOfilter/OSM_SUMO no DropBox execute o jar:
+
+	OSM-SUMO.jar
+
+2.Escolha o tipo de Sistema Operacional:
+
+ - Windows;
+ - Linux;
+
+3.Clique no botão Open file, e escolha o arquivo .osm que deseja filtrar;
+
+4.Nas comboBox, escolha as opções (filtros) que você deseja que permaneçam 
+no novo arquivo que será gerado:
+ 
+ - Motorway;
+ - Trunk;
+ - Primary;
+ - Secondary;
+ - Tertiary;
+ - Unclassified;
+ - Residential;
+ - Living Street;
+ - Road;
+
+5.Se você desejar remover geometrias, clique na comboBox Remove Geometry.
+Essa opções converte curvas em retas diminuindo a quantidade de nodos.
+
+6.Clique em Build File, para gerar o arquivo.
+
+
+7. você pode acompanhar o procesamento na progressBar de Status.
+Obs: para arquivos grande a aplicação é mais lenta.
+
+8. No término da execução será solicitado que você salve o novo arquivo.
+ 
+ - Salve com a extensão .osm.xml
+
+9. Se a escolha foi pelo sistema operacional Windows, o netconvert será executado
+automáticamente, digite o seguinte comando no promt aberto:
+
+ >> netconvert --osm nomeArquivoSalvo.osm.xml
+
+   Se a escolha foi pelo Linux, vá no diretório do netconvert pelo prompt(na pasta do filtro 
+ou na pasta do SUMO) e execute   o mesmo comando listado acima.
+
+10. O netconvert gera como padrão um arquivo chamado net.net.xml, esse arquivo pode
+ser carregado o SUMO para geração da simulação.
+
+
+Boa sorte! 
